@@ -43,3 +43,58 @@ sd(grades$Final_F2015, na.rm = TRUE)
 #summary
 summary(grades)
 ```
+
+```{r}
+#plots
+plot(grades$Final_F2015, grades$HW_F2015, ann = FALSE)
+#add line
+fit = lm(HW_F2015 ~ Final_F2015, data = grades) #make line equation
+fit
+abline(fit) #fit the line
+title(main = "Stats grades 2015", #labels
+      ylab = "Homework", 
+      xlab = "Final")
+```
+
+```{r}
+#ggplot
+library(ggplot2)
+ggplot(grades, aes(x=Final_F2015, y=HW_F2015)) +
+  geom_point() +
+  geom_smooth(method = lm) +
+  labs(title = "Fall 2015 HW vs Final",y = "Final Fall 2015", x = "HW Fall 2015")+
+  ylim(c(85,100))+xlim(c(80,100))
+
+
+```
+
+```{r}
+#correlation
+
+cor.test(grades$Final_F2015, grades$HW_F2015)
+#report as: r(13) = 0.84, p<.0001, strong positive correlation
+
+```
+
+```{r}
+#t test
+#paired -> t.test(df$variable1, df$variable2, paired = TRUE)
+t.test(grades$HW_W2016, grades$Final_W2016, paired = TRUE)
+
+#independent t test (Welch's)
+t.test(grades$Final_F2015, grades$Final_W2016)
+
+#independent (student) t test (assumes equal variance)
+t.test(grades$Final_F2015, grades$Final_W2016, var.equal = TRUE)
+
+#independent samples (y is numeric, x is binary)
+  #t.test(y ~ x, data = df)
+
+#one sample
+  #t.test(y, mu = 'hyp value')
+```
+
+
+
+
+
