@@ -1,0 +1,23 @@
+---
+title: "lecture1notes"
+author: "Abby Bergman"
+date: "1/8/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load packages
+library(tidyverse)
+library(ggplot2)
+library(readr)
+```
+
+```{r}
+#load grades csv
+grades <- read.csv("Grades.csv")
+View(grades)
+```
