@@ -1,0 +1,37 @@
+---
+title: "ebola"
+author: "Abby Bergman"
+date: "1/8/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+```{r}
+setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_01")
+```
+
+```{r}
+#load study_01
+study_01 <- read.csv("Study1.csv")
+View(study_01)
+```
+
+```{r}
+#independent t test
+  #t.test(study_01$before, study_01$after)
+
+study_01$date = paste('2015', study_01$month, study_01$date)
+
+study_01$date = as.Date(study_01$date, format = '%Y %B %d')
+
+outbreakDate = as.Date('2015 September 30', format = '%Y %B %d')
+
+study_01$beforeOutbreak = study_01$date <= outbreakDate
+
+
+```
