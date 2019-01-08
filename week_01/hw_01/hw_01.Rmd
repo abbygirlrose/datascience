@@ -1,0 +1,65 @@
+---
+title: "hw_01"
+author: "Abby Bergman"
+date: "1/8/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load packages
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+#set wd
+setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_01/hw_01")
+
+#import data
+bicycle <- read.csv("Bicycle.csv")
+View(bicycle)
+```
+
+```{r}
+#Risk taking scores
+helmet <- bicycle %>%
+  filter(Condition ==1)
+
+hat <- bicycle %>%
+  filter(Condition == 2)
+
+#BART
+mean(helmet$BART)
+sd(helmet$BART)
+
+mean(hat$BART)  
+sd(hat$BART)
+
+#independent t test (not Welch's)
+t.test(helmet$BART, hat$BART, var.equal = TRUE)
+```
+
+```{r}
+#SSS
+mean(helmet$SSS_total)
+sd(helmet$SSS_total)
+
+mean(hat$SSS_total)
+sd(hat$SSS_total)
+
+#independent t test
+t.test(helmet$SSS_total, hat$SSS_total)
+```
+
+```{r}
+#anxiety measurement
+```
+
+```{r}
+#gender
+```
+
