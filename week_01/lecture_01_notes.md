@@ -25,7 +25,24 @@ library(readr)
 ```
 
 ``` r
+#set wd (only need to do this if not in an .Rmd file)
+setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_01")
+```
+
+``` r
 #load grades csv
 grades <- read.csv("Grades.csv")
 View(grades)
+
+study_01 <- read.csv("Study1.csv")
+View(study_01)
 ```
+
+``` r
+#Descriptive statistics
+
+#mean(df$variable)
+mean(grades$HW_F2015, na.rm = TRUE)
+```
+
+    ## [1] 92.46489
