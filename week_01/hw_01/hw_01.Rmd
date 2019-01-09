@@ -40,6 +40,9 @@ sd(helmet$BART)
 mean(hat$BART)  
 sd(hat$BART)
 
+var(helmet$BART)
+var(hat$BART) #I am confused becasue these variances are not equal but the researchers assumed equal var?
+
 #independent t test (not Welch's)
 t.test(helmet$BART, hat$BART, var.equal = TRUE)
 ```
@@ -51,6 +54,9 @@ sd(helmet$SSS_total)
 
 mean(hat$SSS_total)
 sd(hat$SSS_total)
+
+var(helmet$SSS_total)
+var(hat$SSS_total) #variances are not equal -> use Welch
 
 #independent t test
 t.test(helmet$SSS_total, hat$SSS_total)
@@ -71,40 +77,65 @@ sd(male$BART)
 mean(female$BART)  
 sd(female$BART)
 
+var(female$BART)
+var(male$BART) #unequal var but they uses Welch's??
+
 #independent t test (not Welch's)
 t.test(male$BART, female$BART, var.equal = TRUE)
 
 ```
+```{r}
+#rename Condition
+bicycle <- bicycle%>%
+  mutate(Condition = factor(Condition, levels=(c(1,2)), labels=(c("Helmet", "Hat")))) 
+```
 
 ```{r}
 #Plot a
+ggplot(bicycle, aes(BART))+
+  facet_grid(Condition~.)+
+   geom_density(fill="green", alpha = .5)+
+  geom_rug() +
+  labs(title = "BART scores for Helmet vs Cap", x = "BART score", y = "")+
+  geom_vline(aes(xintercept=mean(BART)), linetype = "dashed") 
 
 ggplot(hat, aes(BART)) +
-  geom_density()+
+  geom_density(fill="green", alpha = .5)+
   geom_rug() +
-  labs(title = "Risktaking scores for Cap", x = "BART score", y = "")
+  labs(title = "Risktaking scores for Cap", x = "BART score", y = "")+
+  geom_vline(aes(xintercept=mean(hat$BART)), linetype = "dashed")
 
 ggplot(helmet, aes(BART)) +
-  geom_density()+
+  geom_density(fill="green", alpha=.5)+
   geom_rug()+
+  geom_vline(aes(xintercept=mean(helmet$BART)), linetype = "dashed")+
   labs(title = "Risktaking scores for Helmet", x = "BART score", y = "")
 ```
 
 ```{r}
 #plot b
+ggplot(bicycle, aes(SSS_total))+
+  facet_grid(Condition~.)+
+   geom_density(fill="green", alpha = .5)+
+  geom_rug() +
+  labs(title = "SSS scores for Helmet vs Cap", x = "SSS score", y = "")+
+   ylim(c(0,.08))+xlim(c(0,40))+
+  geom_vline(aes(xintercept=mean(SSS_total)), linetype = "dashed")
 
 
 ggplot(hat, aes(SSS_total)) +
-  geom_density()+
+  geom_density(fill="green", alpha = .5)+
   geom_rug() +
   labs(title = "SSS scores for Cap", x = "SSS score", y = "")+
-   ylim(c(0,.08))+xlim(c(0,40))
+   ylim(c(0,.08))+xlim(c(0,40))+
+  geom_vline(aes(xintercept=mean(hat$SSS_total)), linetype = "dashed")
 
 ggplot(helmet, aes(SSS_total)) +
-  geom_density()+
+  geom_density(fill="green", alpha=.5)+
   geom_rug()+
   labs(title = "SSS scores for Helmet", x = "SSS score", y = "") +
-   ylim(c(0,.08))+xlim(c(0,40))
+   ylim(c(0,.08))+xlim(c(0,40))+
+  geom_vline(aes(xintercept=mean(helmet$SSS_total)), linetype = "dashed")
 
 ```
 

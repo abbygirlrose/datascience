@@ -31,7 +31,11 @@ study_01$date = as.Date(study_01$date, format = '%Y %B %d')
 
 outbreakDate = as.Date('2015 September 30', format = '%Y %B %d')
 
+#make before vector
 study_01$beforeOutbreak = study_01$date <= outbreakDate
+
+t.test(study_01$VoterIntentionIndex[study_01$beforeOutbreak],
+       study_01$VoterIntentionIndex[!study_01$beforeOutbreak], var.equal = TRUE)
 
 
 ```
