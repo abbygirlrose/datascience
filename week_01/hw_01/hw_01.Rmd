@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #load packages
 library(tidyverse)
 library(dplyr)
+library(ggplot2)
 ```
 
 ```{r}
@@ -55,11 +56,55 @@ sd(hat$SSS_total)
 t.test(helmet$SSS_total, hat$SSS_total)
 ```
 
-```{r}
-#anxiety measurement
-```
 
 ```{r}
 #gender
+male <- bicycle %>%
+  filter(Sex ==1)
+
+female <- bicycle %>%
+  filter(Sex == 2)
+
+mean(male$BART)
+sd(male$BART)
+
+mean(female$BART)  
+sd(female$BART)
+
+#independent t test (not Welch's)
+t.test(male$BART, female$BART, var.equal = TRUE)
+
+```
+
+```{r}
+#Plot a
+
+ggplot(hat, aes(BART)) +
+  geom_density()+
+  geom_rug() +
+  labs(title = "Risktaking scores for Cap", x = "BART score", y = "")
+
+ggplot(helmet, aes(BART)) +
+  geom_density()+
+  geom_rug()+
+  labs(title = "Risktaking scores for Helmet", x = "BART score", y = "")
+```
+
+```{r}
+#plot b
+
+
+ggplot(hat, aes(SSS_total)) +
+  geom_density()+
+  geom_rug() +
+  labs(title = "SSS scores for Cap", x = "SSS score", y = "")+
+   ylim(c(0,.08))+xlim(c(0,40))
+
+ggplot(helmet, aes(SSS_total)) +
+  geom_density()+
+  geom_rug()+
+  labs(title = "SSS scores for Helmet", x = "SSS score", y = "") +
+   ylim(c(0,.08))+xlim(c(0,40))
+
 ```
 
