@@ -22,7 +22,7 @@ setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Scienc
 
 #import data
 bicycle <- read.csv("Bicycle.csv")
-View(bicycle)
+
 ```
 
 ```{r}
@@ -32,6 +32,10 @@ helmet <- bicycle %>%
 
 hat <- bicycle %>%
   filter(Condition == 2)
+
+#overall descriptive stats
+mean(bicycle$BART)
+mean(bicycle$SSS_total)
 
 #BART
 mean(helmet$BART)
@@ -87,7 +91,7 @@ t.test(male$BART, female$BART, var.equal = TRUE)
 ```{r}
 #rename Condition
 bicycle <- bicycle%>%
-  mutate(Condition = factor(Condition, levels=(c(1,2)), labels=(c("Helmet", "Hat")))) 
+  mutate(Condition = factor(Condition, levels=(c(1,2)), labels=(c("Helmet", "Cap")))) 
 ```
 
 ```{r}
@@ -97,19 +101,36 @@ ggplot(bicycle, aes(BART))+
    geom_density(fill="green", alpha = .5)+
   geom_rug() +
   labs(title = "BART scores for Helmet vs Cap", x = "BART score", y = "")+
-  geom_vline(aes(xintercept=mean(BART)), linetype = "dashed") 
+  geom_vline(aes(xintercept=mean(BART)), linetype = "dashed")+
+  ylim(c(0,.03))+xlim(c(-10,90))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.y=element_blank())
 
 ggplot(hat, aes(BART)) +
   geom_density(fill="green", alpha = .5)+
   geom_rug() +
   labs(title = "Risktaking scores for Cap", x = "BART score", y = "")+
-  geom_vline(aes(xintercept=mean(hat$BART)), linetype = "dashed")
+  geom_vline(aes(xintercept=mean(hat$BART)))+
+  geom_vline(aes(xintercept=35.6165), linetype ="dashed")+
+  ylim(c(0,.06))+xlim(c(-20,100))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.y=element_blank())
 
 ggplot(helmet, aes(BART)) +
   geom_density(fill="green", alpha=.5)+
   geom_rug()+
-  geom_vline(aes(xintercept=mean(helmet$BART)), linetype = "dashed")+
-  labs(title = "Risktaking scores for Helmet", x = "BART score", y = "")
+  geom_vline(aes(xintercept=mean(helmet$BART)))+
+  labs(title = "Risktaking scores for Helmet", x = "BART score", y = "")+
+  geom_vline(aes(xintercept=35.6165), linetype="dashed")+
+  ylim(c(0,.06))+xlim(c(-20,100))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.y=element_blank())
 ```
 
 ```{r}
@@ -120,22 +141,36 @@ ggplot(bicycle, aes(SSS_total))+
   geom_rug() +
   labs(title = "SSS scores for Helmet vs Cap", x = "SSS score", y = "")+
    ylim(c(0,.08))+xlim(c(0,40))+
-  geom_vline(aes(xintercept=mean(SSS_total)), linetype = "dashed")
-
+  geom_vline(aes(xintercept=mean(SSS_total)), linetype = "dashed")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.y=element_blank())
 
 ggplot(hat, aes(SSS_total)) +
   geom_density(fill="green", alpha = .5)+
   geom_rug() +
   labs(title = "SSS scores for Cap", x = "SSS score", y = "")+
-   ylim(c(0,.08))+xlim(c(0,40))+
-  geom_vline(aes(xintercept=mean(hat$SSS_total)), linetype = "dashed")
+   ylim(c(0,.1))+xlim(c(0,40))+
+  geom_vline(aes(xintercept=mean(hat$SSS_total)))+
+  geom_vline(aes(xintercept=20.95), linetype = "dashed")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.y=element_blank())
 
 ggplot(helmet, aes(SSS_total)) +
   geom_density(fill="green", alpha=.5)+
   geom_rug()+
   labs(title = "SSS scores for Helmet", x = "SSS score", y = "") +
-   ylim(c(0,.08))+xlim(c(0,40))+
-  geom_vline(aes(xintercept=mean(helmet$SSS_total)), linetype = "dashed")
+   ylim(c(0,.1))+xlim(c(0,50))+
+  geom_vline(aes(xintercept=mean(helmet$SSS_total)))+
+    geom_vline(aes(xintercept=20.95), linetype="dashed")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title.y=element_blank())
+
 
 ```
 
