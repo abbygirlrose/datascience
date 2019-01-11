@@ -2,14 +2,14 @@
 title: "hw_01"
 author: "Abby Bergman"
 date: "1/8/2019"
-output: github_document
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, include=FALSE}
 #load packages
 library(tidyverse)
 library(dplyr)
@@ -17,7 +17,7 @@ library(ggplot2)
 ```
 
 ```{r}
-#set wd
+#set wd -> didn't actually have to do this because I worked in a markdown
 setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_01/hw_01")
 
 #import data
@@ -44,9 +44,6 @@ sd(helmet$BART)
 mean(hat$BART)  
 sd(hat$BART)
 
-var(helmet$BART)
-var(hat$BART) #I am confused becasue these variances are not equal but the researchers assumed equal var?
-
 #independent t test (not Welch's)
 t.test(helmet$BART, hat$BART, var.equal = TRUE)
 ```
@@ -58,9 +55,6 @@ sd(helmet$SSS_total)
 
 mean(hat$SSS_total)
 sd(hat$SSS_total)
-
-var(helmet$SSS_total)
-var(hat$SSS_total) #variances are not equal -> use Welch
 
 #independent t test
 t.test(helmet$SSS_total, hat$SSS_total)
@@ -81,9 +75,6 @@ sd(male$BART)
 mean(female$BART)  
 sd(female$BART)
 
-var(female$BART)
-var(male$BART) #unequal var but they uses Welch's??
-
 #independent t test (not Welch's)
 t.test(male$BART, female$BART, var.equal = TRUE)
 
@@ -96,22 +87,22 @@ bicycle <- bicycle%>%
 
 ```{r}
 #Plot a
-ggplot(bicycle, aes(BART))+
-  facet_grid(Condition~.)+
-   geom_density(fill="green", alpha = .5)+
-  geom_rug() +
-  labs(title = "BART scores for Helmet vs Cap", x = "BART score", y = "")+
-  geom_vline(aes(xintercept=mean(BART)), linetype = "dashed")+
-  ylim(c(0,.03))+xlim(c(-10,90))+
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
-          axis.ticks=element_blank(),
-          axis.title.y=element_blank())
+#ggplot(bicycle, aes(BART))+
+  #facet_grid(Condition~.)+
+   #geom_density(fill="green", alpha = .5)+
+  #geom_rug() +
+  #labs(title = "BART scores for Helmet vs Cap", x = "BART score", y = "")+
+  #geom_vline(aes(xintercept=mean(BART)), linetype = "dashed")+
+  #ylim(c(0,.03))+xlim(c(-10,90))+
+  #theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+#panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+          #axis.ticks=element_blank(),
+          #axis.title.y=element_blank())
 
 ggplot(hat, aes(BART)) +
   geom_density(fill="green", alpha = .5)+
   geom_rug() +
-  labs(title = "Risktaking scores for Cap", x = "BART score", y = "")+
+  labs(title = "a", subtitle = "Cap", x = "BART score", y = "")+
   geom_vline(aes(xintercept=mean(hat$BART)))+
   geom_vline(aes(xintercept=35.6165), linetype ="dashed")+
   ylim(c(0,.06))+xlim(c(-20,100))+
@@ -124,7 +115,7 @@ ggplot(helmet, aes(BART)) +
   geom_density(fill="green", alpha=.5)+
   geom_rug()+
   geom_vline(aes(xintercept=mean(helmet$BART)))+
-  labs(title = "Risktaking scores for Helmet", x = "BART score", y = "")+
+  labs(title = "a", subtitle = "Helmet", x = "Score", y = "")+
   geom_vline(aes(xintercept=35.6165), linetype="dashed")+
   ylim(c(0,.06))+xlim(c(-20,100))+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -135,22 +126,22 @@ panel.background = element_blank(), axis.line = element_line(colour = "black"),a
 
 ```{r}
 #plot b
-ggplot(bicycle, aes(SSS_total))+
-  facet_grid(Condition~.)+
-   geom_density(fill="green", alpha = .5)+
-  geom_rug() +
-  labs(title = "SSS scores for Helmet vs Cap", x = "SSS score", y = "")+
-   ylim(c(0,.08))+xlim(c(0,40))+
-  geom_vline(aes(xintercept=mean(SSS_total)), linetype = "dashed")+
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
-          axis.ticks=element_blank(),
-          axis.title.y=element_blank())
+#ggplot(bicycle, aes(SSS_total))+
+ # facet_grid(Condition~.)+
+  # geom_density(fill="green", alpha = .5)+
+ # geom_rug() +
+ # labs(title = "SSS scores for Helmet vs Cap", x = "SSS score", y = "")+
+ #  ylim(c(0,.08))+xlim(c(0,40))+
+ # geom_vline(aes(xintercept=mean(SSS_total)), linetype = "dashed")+
+ # theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+#panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
+        #  axis.ticks=element_blank(),
+         # axis.title.y=element_blank())
 
 ggplot(hat, aes(SSS_total)) +
   geom_density(fill="green", alpha = .5)+
   geom_rug() +
-  labs(title = "SSS scores for Cap", x = "SSS score", y = "")+
+  labs(title ="b", subtitle=  "Cap", x = "SSS score", y = "")+
    ylim(c(0,.1))+xlim(c(0,40))+
   geom_vline(aes(xintercept=mean(hat$SSS_total)))+
   geom_vline(aes(xintercept=20.95), linetype = "dashed")+
@@ -162,14 +153,14 @@ panel.background = element_blank(), axis.line = element_line(colour = "black"),a
 ggplot(helmet, aes(SSS_total)) +
   geom_density(fill="green", alpha=.5)+
   geom_rug()+
-  labs(title = "SSS scores for Helmet", x = "SSS score", y = "") +
+  labs(title ="b", subtitle =  "Helmet", x = "SSS score", y = "") +
    ylim(c(0,.1))+xlim(c(0,50))+
   geom_vline(aes(xintercept=mean(helmet$SSS_total)))+
     geom_vline(aes(xintercept=20.95), linetype="dashed")+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"),axis.text.y=element_blank(),
           axis.ticks=element_blank(),
-          axis.title.y=element_blank())
+          axis.title.y=element_blank()) 
 
 
 ```
