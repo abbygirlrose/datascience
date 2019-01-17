@@ -1,0 +1,29 @@
+---
+title: "lecture_02_notes"
+author: "Abby Bergman"
+date: "1/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load packages
+library(tidyverse)
+library(ggplot2)
+library(readr)
+```
+
+```{r}
+#set wd (only need to do this if not in an .Rmd file)
+setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_01")
+```
+
+```{r}
+study01 <- read_csv("~/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_02/Study1.csv")
+
+study02 <- read_csv("~/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_02/Study2.csv")
+```
+

@@ -1,0 +1,150 @@
+---
+title: "hw_02"
+author: "Abby Bergman"
+date: "1/15/2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#libraries
+library(tidyverse)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(lubridate)
+library(effsize)
+library(powerAnalysis)
+```
+
+```{r}
+study_02 <- read.csv("Study2.csv")
+study_01 <- read.csv("Study1.csv")
+
+study_01$date = paste('2015', study_01$month, study_01$date)
+
+study_01$date = as.Date(study_01$date, format = '%Y %B %d')
+
+outbreakDate = as.Date('2015 September 30', format = '%Y %B %d')
+```
+
+```{r}
+#change state senate race to string
+study_02$StateSenateRace = as.character(study_02$StateSenateRace)
+
+#exclude outliers
+exclude = c("Hawaii", "Rhode Island")
+study_02 = study_02[!(study_02$StateSenateRace %in% exclude),]
+```
+
+```{r}
+#Reproduce all 4 plots on page 599 using ggplot2
+#vector of days
+#day <- mday(study_01$date)
+
+sept <- study_01 %>%
+  filter(month == "September") %>%
+  mutate()
+oct <- study_01 %>%
+  filter(month == "October")
+
+sep24 = as.Date('2015-09-24', format = '%Y-%m-%d')
+sep30 = as.Date('2015-09-30', format = '%Y-%m-%d')
+
+sepweek <- sept %>%
+  filter(date >= '2015-09-24' & date <= '2015-09-30')
+
+oct1 = as.Date('2015-10-01', format = '%Y-%m-%d')
+oct7 = as.Date('2015-10-07', format = '%Y-%m-%d')
+
+octweek <- oct%>%
+  filter(date >='2015-10-01' & date<='2015-10-07')
+```
+
+```{r}
+#Reproduce all 4 plots on page 599 using ggplot2 (do not worry about axes units accuracy or title of plot)
+
+ggplot(data = sept, aes(x = date, y = VoterIntentionIndex))+
+  geom_point() +
+  labs(title = "a", 
+       subtitle = "September",
+       y = "Voter-Intention-Index Score", 
+       x = "Day") +
+  geom_smooth(method = lm, aes(color="red"), se=F)+
+  scale_y_continuous(breaks = c(-1,-.5,0,.5,1,1.5,2,2.5,3))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black")
+          )
+
+ggplot(data = oct, aes(x = date, y = VoterIntentionIndex))+
+  geom_point() +
+  labs(title = "a", 
+       subtitle = "October",
+       y = "Voter-Intention-Index Score", 
+       x = "Day") +
+  geom_smooth(method = lm, aes(color="red"), se=F)+
+  scale_y_continuous(breaks = c(-1,-.5,0,.5,1,1.5,2,2.5,3))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black")
+          )
+
+ggplot(data=sepweek, aes(x=date, y = VoterIntentionIndex))+
+  geom_jitter()+
+  geom_smooth(method = lm, aes(color = "red"), se=F)+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black")
+          )+
+  labs(title = "b", subtitle = "September")
+
+ggplot(data=octweek, aes(x=date, y = VoterIntentionIndex))+
+  geom_jitter()+
+  geom_smooth(method = lm, aes(color = "red"), se=F)+
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black")
+          )+
+  labs(title = "b", subtitle = "October")
+```
+
+
+```{r}
+#Mean voter-intention difference score t test (bonus 1 pt for producing code for cohen d)
+
+t.test(study_02$StateSpecificVoterIntentionIndexDifferenceScore, mu = 0)
+
+#(d = cohen.d(), pooled = TRUE, na.rm = TRUE))
+
+```
+
+```{r}
+#State-specific voter-intention difference score between Republican vs. Democrat candidate (bonus 1 pt for producing code for cohen d) 
+study_02$rep <- study_02$PollingDifferenceInFinalPollInSeptember > 0
+
+study_02$dem <- study_02$PollingDifferenceInFinalPollInSeptember < 0
+
+t.test(study_02$StateSpecificVoterIntentionIndexDifferenceScore[study_02$rep],
+       study_02$StateSpecificVoterIntentionIndexDifferenceScore[study_02$dem], var.equal = TRUE)
+
+cohen.d(study_02$StateSpecificVoterIntentionIndexDifferenceScore[study_02$rep],
+       study_02$StateSpecificVoterIntentionIndexDifferenceScore[study_02$dem], pooled = TRUE, na.rm = T)
+```
+
+```{r}
+#Regression: difference score, PVI score, polling difference (do not worry about beta values, but your R2, p values should still match the article results).
+
+#y = StateSpecificVoterIntentionIndexDifferenceScore
+#x = PVI + PollingDifferenceInFinalPollInSeptember
+
+fitpoll = lm(StateSpecificVoterIntentionIndexDifferenceScore ~ PVI + PollingDifferenceInFinalPollInSeptember , data = study_02)
+fitpoll
+summary(fitpoll)
+confint(fitpoll)
+
+```
+
+
+
+```
+
