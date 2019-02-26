@@ -19,6 +19,9 @@ setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Scienc
 #load study_01
 study_01 <- read.csv("Study1.csv")
 View(study_01)
+
+study_02 <- read.csv("Study2.csv")
+View(study_02)
 ```
 
 ```{r}
@@ -37,5 +40,80 @@ study_01$beforeOutbreak = study_01$date <= outbreakDate
 t.test(study_01$VoterIntentionIndex[study_01$beforeOutbreak],
        study_01$VoterIntentionIndex[!study_01$beforeOutbreak], var.equal = TRUE)
 
+```
 
+#Week 2 notes start here
+```{r}
+#Cohen's d
+#package to get -> effsize
+library(effsize)
+
+#specify pooled=TRUE
+
+(d = cohen.d(study_01$VoterIntentionIndex[study_01$beforeOutbreak],
+       study_01$VoterIntentionIndex[!study_01$beforeOutbreak], pooled = TRUE, na.rm = TRUE))
+
+
+#make vectors for weeks
+oct1 = as.Date('2015-10-01', format = '%Y-%m-%d')
+oct7 = as.Date('2015-10-07', format = '%Y-%m-%d')
+
+#make range
+study_01$inOctRange = study_01$date >= oct1 & study_01$date <= oct7
+
+sep24 = as.Date('2015-09-24', format = '%Y-%m-%d')
+sep30 = as.Date('2015-09-30', format = '%Y-%m-%d')
+
+study_01$inSepRange = study_01$date >= sep24 & study_01$date <= sep30
+
+#t test
+t.test(study_01$VoterIntentionIndex[study_01$inOctRange],
+       study_01$VoterIntentionIndex[study_01$inSepRange], var.equal = TRUE)
+
+#correlation
+cor.test(study_01$VoterIntentionIndex, study_01$EbolaSearchVolumeIndex)
+
+cor.test(study_01$VoterIntentionIndex[study_01$date >= sep24 & study_01$date <= oct7],
+         study_01$DailyEbolaSearchVolume[study_01$date >= sep24 & study_01$date <= oct7])
+```
+
+#regression notes
+```{r}
+#linear regression
+# fit = lm(y ~ x, data = mydata)
+# summary(fit)
+# confint(fit)
+
+#multplie regression
+# fit = lm(y ~ (x1+x2+x3...+...xn), data = mydata)
+# summary(fit)
+# confint(fit)
+```
+
+
+```{r}
+# replicating regression on page 598 of ebola article
+#y = VoterIntentionIndex
+#x = Date
+sept <- study_01 %>%
+  filter(month == "September")
+
+fitsep = lm(VoterIntentionIndex ~ date , data = sept)
+summary(fitsep)
+confint(fitsep)
+
+oct <- study_01 %>%
+  filter(month == "October")
+
+fitoct = lm(VoterIntentionIndex ~ date , data = oct)
+summary(fitoct)
+confint(fitoct)
+
+sep01 = as.Date('2015-09-01', format = '%Y-%m-%d')
+sep30 = as.Date('2015-09-30', format = '%Y-%m-%d')
+
+study_01$inSepRange = study_01$date >= sep01 & study_01$date <= sep30
+
+fit3 = lm(VoterIntentionIndex ~ date, data = study_01[study_01$inSepRange == TRUE,])
+fit3
 ```

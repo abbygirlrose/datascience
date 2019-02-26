@@ -1,0 +1,106 @@
+---
+title: "week_05_notes"
+author: "Abby Bergman"
+date: "2/5/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(vcd)
+
+art.table = with(Arthritis, table(Improved))
+art.table
+
+prop.table(art.table) #turn frequencies into proportions
+prop.table(art.table)*100
+
+
+#two way contingency tables
+#format:
+#"table name" = xtabs(~ row + column, data = dataframe)
+
+art = xtabs(~Treatment + Improved, data = Arthritis)
+art
+
+#to get sum row
+addmargins(art)
+
+#conditional dist
+art1 <- addmargins(prop.table(art, 2)*100)
+
+#obtain expected cell count
+
+library(gmodels)
+
+#format
+#CrossTable(Vector A, Vector B)
+
+CrossTable(Arthritis$Treatment, Arthritis$Improved,
+           expected = TRUE, 
+           prop.r = FALSE, 
+           prop.c = FALSE, 
+           prop.t = FALSE, 
+           prop.chisq = FALSE)
+
+
+#run chi square
+#format: 
+#chisq.test(x,y=NULL)
+#if "x" is numberic or oneD table of numbers, then a goodness of fit tets will be done
+
+#if x is 2D, r assumes contingency table and test of independence is done
+chisq.test(art)
+
+
+
+# goodness of fit m and m
+
+x = c(9, 8, 12, 15, 20, 6)
+
+p = c(.24, .20, .16, .14, .13, .13)
+
+chisq.test(x, p=p)
+```
+
+
+```{r}
+#Shaw paper
+study_01 <- read_csv("week_05/Shaw_S1.csv")
+inequity <- read_csv("Shaw_Exp1.csv")
+
+#rename variable
+names(inequity)[c(1,2,3)] = c('choice', 'condition', 'agegroup')
+
+inequity$choice = factor(inequity$choice)
+#inequity$condition = factor(inequity$condition)
+inequity$agegroup = factor(inequity$agegroup)
+
+inequity2  = inequity[which(inequity$condition == 0.5),]
+
+#inequity$condition = as.numeric(inequity$condition)
+
+#inequity$condition = ifelse(inequity$condition == 0.5,
+                            'Self-Advantaging',
+                            'Self-Disadvantaging')
+
+table = xtabs(~ agegroup+choice, data = inequity2)
+    
+fisher.test(table)
+
+CrossTable(inequity2$agegroup, inequity2$choice,
+           expected=TRUE, prop.r = TRUE, prop.c = FALSE, prop.t = FALSE, prop.chisq = FALSE)
+
+
+inequity3  = inequity[which(inequity$condition == -0.5),]
+
+table = xtabs(~ agegroup+choice, data = inequity3)
+    
+fisher.test(table)
+
+CrossTable(inequity3$agegroup, inequity3$choice,
+           expected=TRUE, prop.r = TRUE, prop.c = FALSE, prop.t = FALSE, prop.chisq = FALSE)
+```

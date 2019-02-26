@@ -1,0 +1,67 @@
+---
+title: "week_03_notes"
+author: "Abby Bergman"
+date: "1/22/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_03")
+library(car) #run type III
+library(Hmisc) #import SPSS file
+library(heplots) # eta squared
+library(tidyverse)
+```
+
+```{r}
+IA = spss.get("Gino.sav", use.value.labels = TRUE)
+View(IA)
+
+IA = IA[which(IA$failed.essay =='0'),]
+
+#IA %>%
+  #filter(failed.essay == 0)
+#change to factors:
+IA$authenticity = factor(IA$authenticity)
+IA$general.type = factor(IA$general.type)
+
+
+#ANOVA TYPE I
+fit = aov(alienation ~ authenticity*general.type, data = IA)
+summary(fit)
+
+#now use car package
+mod = lm(alienation ~ authenticity*general.type, data = IA,
+         contrasts = list(authenticity = contr.sum, general.type = contr.sum))
+fit = Anova(mod, type = 3)
+fit
+
+#eta squared
+etasq(mod)
+
+#confidence interval
+t.test(IA$alienation[IA$authenticity == 1], conf.int = TRUE)
+t.test(IA$alienation[IA$authenticity == 0], conf.int = TRUE)
+
+
+#type III without car
+options(contrasts = c("contr.sum", "contr.poly"))
+fit0 = aov(alienation ~ authenticity*general.type, data = IA)
+drop1(fit0,~., test = "F")
+
+#impurity
+mod = lm(impurity ~ authenticity*general.type, data = IA,
+         contrasts = list(authenticity = contr.sum, general.type = contr.sum))
+fit = Anova(mod, type = 3)
+fit
+
+#moral.self.regard
+mod = lm(moral.self.regard ~ authenticity*general.type, data = IA,
+         contrasts = list(authenticity = contr.sum, general.type = contr.sum))
+fit = Anova(mod, type = 3)
+fit
+```

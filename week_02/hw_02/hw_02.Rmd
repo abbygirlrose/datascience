@@ -76,7 +76,8 @@ ggplot(data = sept, aes(x = date, y = VoterIntentionIndex))+
   geom_smooth(method = lm, aes(color="red"), se=F)+
   scale_y_continuous(breaks = c(-1,-.5,0,.5,1,1.5,2,2.5,3))+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black")
+panel.background = element_blank(), axis.line = element_line(colour = "black"),
+legend.position="none"
           )
 
 ggplot(data = oct, aes(x = date, y = VoterIntentionIndex))+
@@ -88,14 +89,16 @@ ggplot(data = oct, aes(x = date, y = VoterIntentionIndex))+
   geom_smooth(method = lm, aes(color="red"), se=F)+
   scale_y_continuous(breaks = c(-1,-.5,0,.5,1,1.5,2,2.5,3))+
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black")
+panel.background = element_blank(), axis.line = element_line(colour = "black"),
+legend.position="none"
           )
 
 ggplot(data=sepweek, aes(x=date, y = VoterIntentionIndex))+
   geom_jitter()+
   geom_smooth(method = lm, aes(color = "red"), se=F)+
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black")
+panel.background = element_blank(), axis.line = element_line(colour = "black"),
+legend.position="none"
           )+
   labs(title = "b", subtitle = "September")
 
@@ -103,8 +106,8 @@ ggplot(data=octweek, aes(x=date, y = VoterIntentionIndex))+
   geom_jitter()+
   geom_smooth(method = lm, aes(color = "red"), se=F)+
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black")
-          )+
+panel.background = element_blank(), axis.line = element_line(colour = "black"), 
+          legend.position="none")+
   labs(title = "b", subtitle = "October")
 ```
 
@@ -129,6 +132,17 @@ t.test(study_02$StateSpecificVoterIntentionIndexDifferenceScore[study_02$rep],
 
 cohen.d(study_02$StateSpecificVoterIntentionIndexDifferenceScore[study_02$rep],
        study_02$StateSpecificVoterIntentionIndexDifferenceScore[study_02$dem], pooled = TRUE, na.rm = T)
+
+#filtering by PVI (last paragraph)
+republican <- study_02 %>%
+  filter(PVI >= 0, PVI != 0)
+
+democrat <- study_02 %>%
+  filter(PVI <= 0, PVI != 0)
+
+t.test(republican$StateSpecificVoterIntentionIndexDifferenceScore, 
+       democrat$StateSpecificVoterIntentionIndexDifferenceScore, 
+       var.equal = TRUE)
 ```
 
 ```{r}

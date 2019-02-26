@@ -1,0 +1,60 @@
+---
+title: "hw_06"
+author: "Abby Bergman"
+date: "2/13/2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include = FALSE}
+library(tidyverse)
+study2 <- read.csv("Shaw_Exp2.csv")
+
+s2 <- read.csv("Shaw_S2.csv")
+library(scales)
+library(AER)
+```
+
+```{r}
+#rescale agegroup
+study2 = study2 %>%
+  select(-X, -X.1, -X.2, -X.3, -X.4, -X.5, -X.6, -X.7)
+
+colnames(study2) = c("DV", "condition", "agegroup", "age", "sex")
+
+ study2 <- study2%>%
+  mutate(agegroup = ifelse(study2$agegroup == 1, .5, -.5)) %>%
+  mutate(DV = as.factor(DV))
+
+colnames(s2) = c("DV", "condition", "agegroup", "age", "sex")
+
+s2 <- s2%>%
+  mutate(agegroup = ifelse(s2$agegroup == 1, .5, -.5))
+
+```
+
+```{r}
+#a.	Reproduce Study 2’s logistic regression analyses (include regression output (beta, SE, etc.) and all Wald statistics) 
+
+fitstudy2 = glm(DV ~ agegroup * condition, data = study2, family = binomial)
+
+summary(fitstudy2)
+
+
+Anova(fitstudy2, type = 3, test.statistic = "Wald")
+
+```
+
+```{r}
+#Reproduce Study S2’s logistic regression analyses (include regression output (beta, SE, etc.) and all Wald statistics) [6]
+
+
+fits2 = glm(DV ~ agegroup * condition, data = s2, family = binomial)
+
+summary(fits2)
+
+Anova(fits2, type = 3, test.statistic = "Wald")
+```

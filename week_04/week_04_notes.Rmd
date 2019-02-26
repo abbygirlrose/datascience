@@ -1,0 +1,89 @@
+---
+title: "wee_04 notes"
+author: "Abby Bergman"
+date: "1/29/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(tidyverse)
+library(Hmisc)
+library(afex)  
+library(tidyr)
+
+#question block = within subjects factor
+#location = between subjects factor
+
+accent <- spss.get("Dl.sav", use.value.labels = TRUE)
+
+#select only 5-6 year olds
+accent56 <- accent[which(accent$age.group == "5-6"),]
+
+#how many subjects
+length(accent56$subject)
+length(unique(accent56$subject))
+
+#give rows unique numbers
+accent56$subject = factor(1:nrow(accent56))
+
+
+#general form
+#ID = subject column
+#DV = name of DV column
+#DATA = file name
+data = aov_ez("ID", "DV response", "data name",
+              between = c("between subjects column"),
+              within = c("within subjects column"),
+              anova_table = list(es ="pes"))
+
+print(data)
+
+accent56 = accent56[,!(names(accent56) %in%
+                         c('geo.s', 'charge.s', 'nice.s', 'friends.s', 'us.s', 'smart.s'))]
+
+#tidyverse
+accent2 <- accent %>%
+  select(-geo.s, -charge.s, -nice.s, -friends.s, -us.s, -smart.s)
+
+SLblock = gather(data = accent56,
+                 key = SLe,
+                 value = response,
+                 nice.n, smart.n, charge.n)
+
+levels(SLblock$SLe) = c("nice.n", "smart.n", "incharge.n")
+
+
+#repeated measures
+
+e_SLE = aov_ez("subject", "response", SLblock,
+               between = c("location"),
+               within = c("SLe"),
+               anova_table = list(es = "pes"))
+print(e_SLE)
+
+#use corection = "none" to not do GG
+
+
+#geography block
+accentgeo <- accent %>%
+  filter(age.group == "5-6")%>%
+  select(-geo.s, -charge.s, -nice.s, -friends.s, -us.s, -smart.s)
+accentgeo$subject = factor(1:nrow(accentgeo))
+
+Gblock <- gather(data = accentgeo,
+                 key = Ge,
+                 value = response,
+                 geo.n, us.n)
+
+e_geo = aov_ez("subject", "response", Gblock,
+               between = c("location"),
+               within = c("Ge"),
+               anova_table = list(es = "pes"))
+print(e_geo)
+
+```

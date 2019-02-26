@@ -1,0 +1,74 @@
+---
+title: "week_06_notes"
+author: "Abby Bergman"
+date: "2/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#basic format
+#glm(formula, family = family, data = mydata)
+
+#logistic
+#glm(Y ~ x1+x2..., family = binomial, data = mydata)
+
+#HW = Shaw study 2
+
+library(AER)
+
+data("Affairs")
+View(Affairs)
+
+
+summary(Affairs)
+table(Affairs$affairs)
+
+
+Affairs$yaffair = as.factor(ifelse(Affairs$affairs == 0, 0, 1))
+
+
+fit = glm(yaffair ~ factor(gender) +age + yearsmarried + children + religiousness +education + occupation +rating, family = binomial, data = Affairs)
+
+summary(fit)
+
+fitreduced = glm(yaffair ~ age+yearsmarried+religiousness+rating, family = binomial, data = Affairs)
+
+summary(fitreduced)
+
+#fitreduced is subset of fit model
+
+anova(fitreduced, fit, test = "Chisq")
+#nonsig p suggests that reduced model fit as well as full, we can just use simple model
+
+exp(coef(fitreduced))
+#odds of affair are increased by 1.106 for a 1 year increase in years married and #holding all factors constant, and odds of an affair decrease with age, religiousness and rating
+
+library(car)
+
+#general form:
+# anova(glm model, type= 3, test.statistic = "Wald")
+
+Anova(fitreduced, type = 3, test.statistic = "Wald")
+
+#use Poisson whenDV is number of events to occur in a given time, simply count, not binary
+
+library(robust)
+data("breslow.dat")
+
+#DV = # of seizures in 8 weeks after assigned condition, or sumY
+#IV =  Trt
+#RG = does drug treatment reduce seizures
+
+summary(breslow.dat[c(6, 7, 8, 10)])
+
+fit1 = glm(sumY ~ Base + Age + Trt, data = breslow.dat, family = poisson )
+
+summary(fit1)
+
+coef(fit1)
+exp(coef(fit1))
+```

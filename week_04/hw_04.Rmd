@@ -1,0 +1,137 @@
+---
+title: "hw_04"
+author: "Abby Bergman"
+date: "1/30/2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# load libraries
+library(tidyverse)
+library(Hmisc)
+library(afex)  
+library(tidyr)
+library(effsize)
+
+taste <- spss.get("ST.sav", use.value.labels = TRUE)
+```
+
+```{r}
+#check uniqueness
+length(taste$subnum)
+length(unique(taste$subnum))
+
+#gather
+tastebite <- gather(data = taste,
+                 key = foodtype,
+                 value = bites,
+                 clean.bites.tot, contam.bites.tot)
+
+consumption = aov_ez("subnum", "bites", tastebite,
+              between = c("age.group", "gender"),
+              within = c("foodtype"),
+              anova_table = list(es ="pes"))
+print(consumption)
+```
+
+```{r, include=FALSE}
+#mean bites taken
+mean(taste$clean.bites.tot)
+mean(taste$contam.bites.tot)
+
+t.test(taste$clean.bites.tot, taste$contam.bites.tot, paired = TRUE,  var.equal = TRUE)
+
+cohen.d(taste$clean.bites.tot, taste$contam.bites.tot, pooled = TRUE, na.rm = T)
+
+taste34 <- taste %>%
+  filter(age.group == "3 to 4")
+taste56 <- taste %>%
+  filter(age.group == "5 to 6")
+taste78 <- taste %>%
+  filter(age.group == "7 to 8")
+
+mean(taste34$clean.bites.tot)
+mean(taste34$contam.bites.tot)
+t.test(taste34$clean.bites.tot, taste34$contam.bites.tot, paired = TRUE,  var.equal = TRUE)
+cohen.d(taste34$clean.bites.tot, taste34$contam.bites.tot, pooled = TRUE, na.rm = T)
+
+mean(taste56$clean.bites.tot)
+mean(taste56$contam.bites.tot)
+t.test(taste56$clean.bites.tot, taste56$contam.bites.tot, paired = TRUE, var.equal = TRUE)
+cohen.d(taste56$clean.bites.tot, taste56$contam.bites.tot, na.rm = T)
+
+mean(taste78$clean.bites.tot)
+mean(taste78$contam.bites.tot)
+t.test(taste78$clean.bites.tot, taste78$contam.bites.tot, paired = TRUE, var.equal = TRUE)
+cohen.d(taste78$clean.bites.tot, taste78$contam.bites.tot, pooled = TRUE, na.rm = T)
+#ttest not working rn
+```
+
+```{r, include = FALSE}
+#need to add "Among 5- to 8-year- old children, the 23 children who sampled both foods ate more clean food than contaminated food (Mclean = 4.26 bites, Mcontam = 2.91 bites), t(22) = 2.47, p = .02, d = 0.52."
+
+tasteboth <- taste %>%
+  filter(both == "yes") %>%
+  filter(age.group != "3 to 4")
+mean(tasteboth$clean.bites.tot)
+mean(tasteboth$contam.bites.tot)
+t.test(tasteboth$clean.bites.tot, tasteboth$contam.bites.tot, paired = TRUE, var.equal = TRUE)
+cohen.d(tasteboth$clean.bites.tot, tasteboth$contam.bites.tot, pooled = TRUE, na.rm = T)
+```
+
+
+```{r}
+
+tasteyummy <- gather(data = tastebite,
+                 key = taste,
+                 value = preference,
+                 yummy.clean, yummy.contam) 
+
+yummy = aov_ez("subnum", "preference", tasteyummy,
+              between = c("age.group", "gender"),
+              within = c("taste"),
+              anova_table = list(es ="pes"))
+print(yummy)
+```
+
+```{r, include = FALSE}
+
+#mean bites taken
+mean(taste$yummy.clean)
+mean(taste$yummy.contam)
+
+t.test(taste$yummy.clean, taste$yummy.contam, paired = TRUE, var.equal = TRUE)
+cohen.d(taste$yummy.clean, taste$yummy.contam, pooled = TRUE, na.rm = T)
+
+taste34 <- taste %>%
+  filter(age.group == "3 to 4")
+taste56 <- taste %>%
+  filter(age.group == "5 to 6")
+taste78 <- taste %>%
+  filter(age.group == "7 to 8")
+
+mean(taste34$yummy.clean)
+mean(taste34$yummy.contam)
+
+t.test(taste34$yummy.clean, taste34$yummy.contam, paired = TRUE, var.equal = TRUE)
+cohen.d(taste34$yummy.clean, taste34$yummy.contam, pooled = TRUE, na.rm = T)
+
+mean(taste56$yummy.clean)
+mean(taste56$yummy.contam)
+
+t.test(taste56$yummy.clean, taste56$yummy.contam, paired = TRUE, var.equal = TRUE)
+cohen.d(taste56$yummy.clean, taste56$yummy.contam, pooled = TRUE, na.rm = T)
+
+mean(taste78$yummy.clean)
+mean(taste78$yummy.contam)
+
+t.test(taste78$yummy.clean, taste78$yummy.contam, paired = TRUE, var.equal = TRUE)
+cohen.d(taste78$yummy.clean, taste78$yummy.contam, pooled = TRUE, na.rm = T)
+```
+
+
+

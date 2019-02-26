@@ -1,0 +1,139 @@
+---
+title: "hw_03"
+author: "Abby Bergman"
+date: "1/23/2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+setwd("/Users/AbigailBergman/Desktop/Grad School/Winter Quarter 2019/Data Science/datascience_repo/week_03")
+library(car) #run type III
+library(Hmisc) #import SPSS file
+library(heplots) # eta squared
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(granovaGG)
+```
+
+```{r}
+physics1 = spss.get("physics1.sav", use.value.labels = TRUE)
+
+physics2 = spss.get("physics2.sav", use.value.labels = TRUE)
+```
+
+```{r}
+#study1
+
+action <- physics1 %>%
+  filter(group == "action")
+
+observation <- physics1 %>%
+  filter(group == "observation")
+
+#study1
+#pretest - "one way ANOVA"
+fit = aov(mag1 ~ group, data = physics1)
+summary(fit)
+
+#post test - ANCOVA to control for pretest
+mod1 = lm(mag2 ~ group + mag1, data = physics1,
+         contrasts = list(group = contr.sum))
+fit1 = Anova(mod1, type = 3)
+fit1
+
+#eta squared
+etasq(mod1)
+
+#t.test for action group change from pre to post
+t.test(action$mag.improvement)
+#t.test for obs group change from pre to post
+t.test(observation$mag.improvement)
+```
+
+```{r}
+
+physics1 %>%
+  group_by(group)%>%
+  mutate(mag1=mean(mag1),
+         mag2=mean(mag2))%>%
+  gather("test","accuracy", 3:4)%>%
+  mutate(test=as.factor(test)) %>%
+  ggplot() +
+  geom_point(aes(test, accuracy, shape = 3))+
+  geom_line(aes(group = interaction(group),test, accuracy, color = group))+
+  geom_hline(aes(yintercept = .5, color = "red"), linetype = "dashed")+
+   ylim(c(.2,.8))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"), 
+legend.position="none", 
+plot.title = element_text(hjust=0.5))+
+  scale_shape_identity()+
+  labs(title = "Study 1")+
+  scale_color_manual(values=c("blue", "light blue", "red"))
+
+
+```
+
+
+```{r}
+
+action1 <- physics1 %>%
+  filter(group == "action")
+
+observation1 <- physics1 %>%
+  filter(group == "observation")
+
+#study 2
+#pretest - "one way ANOVA"
+fit2 = aov(accuracy.pre ~ group, data = physics2)
+summary(fit)
+
+#posttest - ANCOVA
+mod3 = lm(accuracy.post ~ group + accuracy.pre, data = physics2,
+         contrasts = list(group = contr.sum))
+fit3 = Anova(mod3, type = 3)
+fit3
+#eta squared
+etasq(mod3)
+
+#vector dependent trials
+mod4 = lm(accuracy.posttest.newVC ~ group + accuracy.pretest.newVC, data = physics2,
+         contrasts = list(group = contr.sum))
+fit4 = Anova(mod4, type = 3)
+fit4
+etasq(mod4)
+#magnitude dependent trials
+mod5 = lm(accuracy.posttest.newNONVC ~ group + accuracy.pretest.newNONVC, data = physics2,
+         contrasts = list(group = contr.sum))
+fit5 = Anova(mod5, type = 3)
+fit5
+
+```
+
+```{r}
+physics2 %>%
+  group_by(group)%>%
+  mutate(accuracy.pre=mean(accuracy.pre),
+         accuracy.post=mean(accuracy.post))%>%
+  gather("test","accuracy", 3:4)%>%
+  mutate(test=as.factor(test)) %>%
+  ggplot() +
+  geom_point(aes(test, accuracy, shape = 3))+
+  scale_x_discrete(limits = c("accuracy.pre", "accuracy.post"))+
+   geom_hline(aes(yintercept = .32, color = "red"), linetype = "dashed")+
+  geom_line(aes(group = interaction(group),test, accuracy, color = group))+
+ ylim(c(.2,.8))+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"),
+legend.position="none",
+plot.title = element_text(hjust=0.5)) +
+  scale_shape_identity()+
+  labs(title = "Study 2") +
+  scale_color_manual(values=c("blue", "light blue", "red"))
+```
+

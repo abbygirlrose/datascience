@@ -1,0 +1,18 @@
+---
+title: "wee_04 notes"
+author: "Abby Bergman"
+date: "1/29/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(tidyverse)
+
+
+  
+```

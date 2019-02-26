@@ -1,0 +1,78 @@
+---
+title: "hw_07"
+author: "Abby Bergman"
+date: "2/20/2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(pwr)
+library(tidyverse)
+library(Hmisc)
+library(afex)  
+library(tidyr)
+library(effsize)
+```
+
+```{r, include=FALSE}
+study1 <- spss.get("Gino Study 1 data.sav", use.value.labels = TRUE)
+
+study2 <- spss.get("Gino Study 2 data.sav", use.value.labels = TRUE)
+
+study3 <- spss.get("Gino Study 3 data.sav", use.value.labels = TRUE)
+
+study4 <- spss.get("Gino Study 4 data.sav", use.value.labels = TRUE)
+
+```
+
+```{r}
+#"We calculated our target sample size using an estimated effect size, f, of 0.2, which would require a sample size of approximately 270 participants for the study to be powered at 90%."
+
+pwr.anova.test(k= 2, n= , f= .2, sig.level= .05, power= .9)
+```
+
+```{r}
+#"We calculated our target sample size using an estimated effect size, f, of 0.1, which would require a sample size of 900 partici- pants for the study to be powered at 85%"
+
+
+pwr.anova.test(k= 2, n= , f= .1, sig.level= .05, power= .85)
+
+```
+
+```{r}
+#"We calculated our target sample size using an estimated effect size, f, of 0.2, which would require a sample size of approximately 280 participants for the study to be powered at 85%"
+
+
+pwr.anova.test(k= 3, n= , f= .2, sig.level= .05, power= .85)
+
+
+```
+
+```{r}
+#"We calculated our target sample size using an estimated effect size, f, of 0.15, which would require a sample size of approxi- mately 490 participants for the study to be powered at 85%."
+
+pwr.anova.test(k= 3, n= , f= .15, sig.level= .05, power= .85)
+```
+
+```{r}
+#Chi Squared
+pwr.chisq.test(w = 0.1853198, N= , df= 2, sig.level = .05, power= .9)
+
+#N = 369 observations
+
+
+P = matrix( c(.42, .28, .03, .07, .1, .1), byrow = TRUE, nrow =3)
+ES.w2(P)
+df = (3-1)*(2-1)
+df
+```
+
+
+
+
+
+

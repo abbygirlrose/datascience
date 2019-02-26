@@ -1,0 +1,39 @@
+---
+title: "week_08_notes"
+author: "Abby Bergman"
+date: "2/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(mediation)
+
+set.seed(2014)
+data("framing", package = "mediation")
+framing
+```
+
+
+```{r}
+#regress IV/DV
+dv.fit = lm(cong_mesg ~ treat, data = framing, family = binomial("logit"))
+summary(dv.fit)
+
+#step 1 emo  ~ IV (framing) - fit model where emo is modeled as a function of framing treatment
+med.fit = lm(emo ~ treat, data = framing)
+summary(med.fit)
+
+#in this example, treatment is expected to increase level of anxiety, which in turn is hypothesized to make subjects more likely to send a letter to congress
+
+out.fit = glm(cong_mesg ~ treat + emo, data = framing, family = binomial("logit"))
+summary(out.fit)
+
+med.out = mediate(med.fit, out.fit, boot = TRUE, treat = "treat", 
+                  mediator = "emo", sims = 1000)
+summary(med.out)
+
+```

@@ -1,0 +1,65 @@
+---
+title: "hw_05"
+author: "Abby Bergman"
+date: "2/6/2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(vcd)
+library(gmodels)
+library(tidyverse)
+
+```
+
+```{r}
+shaw_s1 <- read_csv("Shaw_S1.csv") %>%
+  select(-X5, -X6, -X7, -X8,-X9)
+
+names(shaw_s1)[c(1,2,4)] = c('choice', 'agegroup', 'sex')
+
+shaw_s1$choice = factor(shaw_s1$choice, levels = c("T", "Y", "M"), labels = c("Throw Away", "Give to Self", "Give to Other"))
+shaw_s1$choice = factor(shaw_s1$choice)
+shaw_s1$agegroup = factor(shaw_s1$agegroup, levels = c(1, 2), labels = c("Younger", "Older"))
+shaw_s1$sex = factor(shaw_s1$sex)
+
+#CrossTable
+CrossTable(shaw_s1$agegroup, shaw_s1$choice,
+           expected=TRUE, prop.r = TRUE, prop.c = FALSE, prop.t = FALSE, prop.chisq = FALSE)
+
+```
+
+```{r}
+# phi = (chi^2/n)^(1/2)
+
+phi <- function(x,n){
+  ((x/n)^(1/2))
+}
+
+#goodness of fit younger
+shaw_young <- shaw_s1 %>%
+  filter(agegroup == "Younger")
+shawtab = xtabs(~choice, data = shaw_young)
+chi <- chisq.test(shawtab)
+#phi
+
+phi(chi[["statistic"]][["X-squared"]],length(shaw_young$choice))
+
+chi <- chisq.test(shawtab)
+
+#goodness of fit older
+shaw_old <- shaw_s1 %>%
+  filter(agegroup == "Older")
+shawtab1 = xtabs(~choice, data = shaw_old)
+chi1<- chisq.test(shawtab1)
+#phi
+phi(chi1[["statistic"]][["X-squared"]],length(shaw_old$choice))
+
+
+shawtab2 = xtabs(~agegroup + choice, data = shaw_s1)
+chisq.test(shawtab2)
+```

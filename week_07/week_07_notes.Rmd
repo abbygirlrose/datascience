@@ -1,0 +1,92 @@
+---
+title: "week_07_notes"
+author: "Abby Bergman"
+date: "2/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(pwr)
+
+
+
+```
+
+
+```{r}
+#t.test
+#pwr.t.test(n=, d =, sig.level = , type = , alternative = )
+#d = effsize, m1-m2/sd
+# r assumes sig = .05
+#type: default is ind samples
+#alternative: whether the test is two sided (default: "two.sided"), (one sides: "less" or "greater")
+
+
+
+```
+Ex:
+  Ha : no difference between drivers using cell phone and not
+  Ho : mu1 - mu 2 = 1
+  
+  d = 1/1.25 = .8
+  
+```{r}
+pwr.t.test(d = .8, sig.level = .05, power = .9)
+```
+
+Ex:
+  d = .5
+  n = 40
+  sig level = .01
+```{r}
+
+pwr.t.test(d = .5, n = 20, sig.level = .01)
+
+#less than 14% chance of declaring a difference of .625 seconds (d = mu1-mu2 / SD)
+#d = .5 = ?/1.25 = .625
+
+# if unequal sample size, use pwr.t2n.test(n1=, n2=, d=, sig.level= , alternative=)
+```
+ANOVA
+format: pwr.anova.test(k= , n= , f= , sig.level= , power= )
+  k: number of groups
+  
+Ex:
+  k= 5
+  power= .8
+  f = .25
+  sig.level = .05
+```{r}
+pwr.anova.test(k= 5, n= , f= .25, sig.level= .05, power= .8)
+
+
+```
+Correlation
+  format: pwr.r.test(n= , r=, sig.level= , power= , alternative =)
+  r= correlation coefficient
+```{r}
+pwr.r.test(r= .25, sig.level= .05, power= .9, alternative = "greater")
+
+```
+
+
+Linear Models
+  format: pwr.f2.test(u= , v=, f2= , sig.level= , power= )
+  u: the numberator (associated with model DF) 
+  v: denominator (associated with error term DF)
+  f2: effect size
+  
+  f21: used when youre evaluating a set of predictors on an outcome
+  f22: used when youre evaluating a set of predictors above and beyond an original set of predictors
+```{r}
+pwr.f2.test(u=3, f2= .07692308, sig.level= .05, power= .9)
+
+#u is total number of b preductors - 1
+.05/(1-.35)
+
+#n = 184 + 8 = 192
+```
