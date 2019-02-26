@@ -36,4 +36,51 @@ med.out = mediate(med.fit, out.fit, boot = TRUE, treat = "treat",
                   mediator = "emo", sims = 1000)
 summary(med.out)
 
+#ACME = Avergae Casual Mediatio Effect = total effect - direct effect
+  #ACME(treated; 0.09) is the estimated avg increase for teh DV anong the treatment group that arrives as a result of the mediator rather than directly from the treatment IV
+#ADE = average direct effect = total effect - diferct effecr
+
+#Total effect = ADE(avg) + ACME(avg)
+
+#ACME is not the same for peopel in treatment vs control group, which is why 2 mediation effects are estimated: ACME(control), ACME(treated)
+
+#prop.mediated: how much of the total effect is explained by the mediator (ACME/total effect)
+
+#conclusion:treatment in the framing experme t may have increased emotional response (anxiety), which in turn made subjects more likely to send a letter to congress
 ```
+
+```{r}
+
+#LAVAAN method
+library(lavaan)
+#test path c
+model1 = glm(cong_mesg ~ treat, data = framing, family = binomial)
+#test path a and c'
+model.politics = "emo ~ treat 
+                  cong_mesg ~ emo + treat"
+
+fit = sem(model.politics, data = framing)
+summary(fit, standardized = T, rsq = T)
+
+#path between emo and treat is now labeled as a, path between emo and cong_mesg is b, and diferct is c
+
+model.politics2 = "emo ~ a*treat
+                  cong_mesg ~ b*emo + c*treat
+
+                  indirect := a*b
+                  direct := c
+                  total := c + (a*b)"
+
+fit2 = sem(model.politics2, se = "boot", bootstrap = 1000, data = framing, likelihood = "wishart")
+summary(fit2, standardized = T, rsq = T)
+parameterEstimates(fit2)
+
+#HW cleaning
+library(Hmisc)
+speech <- spss.get("Schroeder Study1 data.sav")
+
+nchar(as.character(speech$Condition[1]))
+
+speech$Condition = gsub(" ", "", speech$Condition) #telling r to remover spaces
+```
+
