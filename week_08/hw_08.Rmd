@@ -1,0 +1,92 @@
+---
+title: "hw_08"
+author: "Abby Bergman"
+date: "2/27/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load packages and files
+library(mediation)
+library(tidyverse)
+library(Hmisc)
+library(lavaan)
+
+study1 <- spss.get("Schroeder Study1 data.sav")
+
+speech$Condition = gsub(" ", "", speech$Condition) #telling r to remover spaces
+
+study1$Condition <- as.factor(study1$Condition)
+
+View(study1)
+```
+
+```{r}
+
+study1 <- study1 %>%
+  filter(cond2 != "video")%>%
+  mutate(hire.like = ifelse(meanhire >= 3, 0, 1))
+
+study1$cond2 <- recode_factor(study1$cond2, transcript = 0, audio = 1)
+```
+
+
+```{r}
+#	Reproduce all the regression values reported in Fig.2, make sure your output shows the mediation pathways (e.g. a, b, etc.) (don’t worry about the alphas for the mediators) [12] 
+
+
+#test path c
+model_basic = glm(hire ~ cond2, data = study1)
+#test path a and c
+model_less_basic = "intellect ~ cond2 
+                  hire ~ intellect + cond2"
+fit_1 = sem(model_less_basic, data = study1)
+summary(fit_1, standardized = T, rsq = T)
+
+model.a2 = "impression ~ cond2
+                  hire ~ impression + cond2"
+fit_2 = sem(model_less_basic, data = study1)
+summary(fit_2, standardized = T, rsq = T)
+
+
+#path between intellect and Condition is now labeled as a, path between emo and cong_mesg is b, and diferct is c
+
+multipleMediation <-'
+    hire ~ b1 * intellect + b2 * impression + c * cond2
+    intellect ~ a1 * cond2
+    impression ~ a2 * cond2 + d*intellect
+    indirect1 := a1 * b1
+    indirect2 := a2 * b2 +d
+    total    := c + (a1 * b1) + (a2 * b2 + d)
+    intellect ~~ impression'
+
+fit_3 = sem(multipleMediation, se = "boot", bootstrap = 5000, data = study1, likelihood = "wishart")
+summary(fit3, standardized = T, rsq = T)
+parameterEstimates(fit_3)
+
+```
+
+```{r}
+#Reproduce the regression output that tests the effect of condition on hiring likelihood before intellect and general impressions were included in the model
+
+model1 = glm(hire ~ cond2, data = study1)
+
+```
+
+```{r}
+#Reproduce the 5,000 sample boot strap test for intellect and general impressions (don’t worry about the combined effect) 
+
+fit_3 = sem(multipleMediation, se = "boot", bootstrap = 5000, data = study1, likelihood = "wishart")
+summary(fit3, standardized = T, rsq = T)
+parameterEstimates(fit_3)
+
+```
+
+
+
+
+
